@@ -1,0 +1,3 @@
+/home/ede/Documents/WS_ComputerGrafik/geometry/CMakeFiles/geometry_test.dir
+/home/ede/Documents/WS_ComputerGrafik/geometry/CMakeFiles/edit_cache.dir
+/home/ede/Documents/WS_ComputerGrafik/geometry/CMakeFiles/rebuild_cache.dir
