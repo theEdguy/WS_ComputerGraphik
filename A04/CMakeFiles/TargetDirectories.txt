@@ -1,0 +1,3 @@
+/home/ede/Documents/WS_ComputerGrafik/A04/CMakeFiles/raytracer.dir
+/home/ede/Documents/WS_ComputerGrafik/A04/CMakeFiles/edit_cache.dir
+/home/ede/Documents/WS_ComputerGrafik/A04/CMakeFiles/rebuild_cache.dir

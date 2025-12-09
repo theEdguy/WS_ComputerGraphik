@@ -1,0 +1,1 @@
+/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/raytracer.dir/link.d CMakeFiles/raytracer.dir/raytracer.cc.o CMakeFiles/raytracer.dir/math.cc.o CMakeFiles/raytracer.dir/geometry.cc.o -o raytracer  /usr/lib/libSDL2main.a /usr/lib/libSDL2-2.0.so.0.3200.58
