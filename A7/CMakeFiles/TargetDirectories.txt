@@ -1,0 +1,4 @@
+/home/ede/Documents/WS_ComputerGrafik/A7/CMakeFiles/viewer.dir
+/home/ede/Documents/WS_ComputerGrafik/A7/CMakeFiles/wavefront_test.dir
+/home/ede/Documents/WS_ComputerGrafik/A7/CMakeFiles/edit_cache.dir
+/home/ede/Documents/WS_ComputerGrafik/A7/CMakeFiles/rebuild_cache.dir

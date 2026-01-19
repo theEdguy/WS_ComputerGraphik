@@ -1,0 +1,5 @@
+/home/ede/Documents/WS_ComputerGrafik/A5_matrix/build/CMakeFiles/math_test.dir
+/home/ede/Documents/WS_ComputerGrafik/A5_matrix/build/CMakeFiles/matrix_test.dir
+/home/ede/Documents/WS_ComputerGrafik/A5_matrix/build/CMakeFiles/test.dir
+/home/ede/Documents/WS_ComputerGrafik/A5_matrix/build/CMakeFiles/edit_cache.dir
+/home/ede/Documents/WS_ComputerGrafik/A5_matrix/build/CMakeFiles/rebuild_cache.dir
