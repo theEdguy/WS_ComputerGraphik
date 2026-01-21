@@ -6,7 +6,8 @@
 template <class FLOAT, size_t N>
 class SquareMatrix {
   static_assert(N > 0u);
-  std::array< Vector<FLOAT,N>, N> matrix;  // Werte werden spaltenweise (als Vektoren) gespeichert
+  // Werte werden spaltenweise (als Vektoren) gespeichert
+  std::array< Vector<FLOAT,N>, N> matrix;
 public:
   SquareMatrix() = default;
 

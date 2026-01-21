@@ -31,6 +31,7 @@ FLOAT & SquareMatrix<FLOAT, N>::at(size_t row, size_t column) {
   return matrix[column][row];
 }
 
+//linearkombination
 template <class FLOAT, size_t N>
 Vector<FLOAT,N> SquareMatrix<FLOAT, N>::operator*(const Vector<FLOAT,N> vector) const {
   Vector<FLOAT, N> result({static_cast<FLOAT>(0.0)}); 
@@ -44,7 +45,7 @@ template <class F, size_t K>
 SquareMatrix<F, K> operator*(const SquareMatrix<F, K> factor1, const SquareMatrix<F, K> factor2) {
   SquareMatrix<F, K> result;
   for (size_t col = 0; col < K; ++col) {
-      // result column is factor1 * factor2's column
+      //Matrix 1 wird mit jeder Spalte aus Matrix2
       result[col] = factor1 * factor2[col];
   }
   return result;

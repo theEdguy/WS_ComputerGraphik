@@ -69,6 +69,7 @@ class OpenGLRenderer : public Renderer {
   SDL_GLContext context;
   unsigned int shaderProgram;
   std::vector< std::unique_ptr<TypedBodyView > > views;
+  
   // Map speichert Name -> {VBO ID, Anzahl Vertices}
   std::map<std::string, std::pair<GLuint, size_t>> model_map; 
   std::vector<GLuint> vbo_list; // Zum Aufräumen

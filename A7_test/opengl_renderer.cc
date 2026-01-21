@@ -57,10 +57,10 @@ std::pair<GLuint, size_t> erstelle_vbo_von_obj(const std::string& dateiname) {
     }
     
     GLuint vbo;
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glGenBuffers(1, &vbo);//holl mal id
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);//nutzen id
     glBufferData(GL_ARRAY_BUFFER, puffer_daten.size() * sizeof(float), puffer_daten.data(), GL_STATIC_DRAW);
-    
+    //copy zur graka
     return {vbo, puffer_daten.size() / 9}; 
 }
 
@@ -250,23 +250,26 @@ std::vector< std::vector<Vector2df> * > vertice_data = {
 */
 
 
-// --- OpenGLView Implementierung ---
 
 OpenGLView::OpenGLView(GLuint vbo, unsigned int shaderProgram, size_t vertices_size, GLuint mode)
 : shaderProgram(shaderProgram), vertices_size(vertices_size), mode(mode) {
     glGenVertexArrays(1, &vao);
+   
     glBindVertexArray(vao);
+   
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
     // Stride = 9 * float (Pos3, Norm3, Col3)
     GLsizei stride = 9 * sizeof(float);
     
+
+//wo und wie die daten zu intepretieren sind
+
     // Loc 0: Position
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0);
     glEnableVertexAttribArray(0);
     
     // Loc 2: Normale (Offset 3 floats) 
-    // Wir haben Normale/Farbe im Buffer getauscht im Vergleich zur typischen Konvention:
     // Buffer: Pos(3), Normale(3), Farbe(3)
     // Shader: Loc 0=Pos, Loc 1=Farbe, Loc 2=Normale
     
@@ -291,10 +294,11 @@ void OpenGLView::render( SquareMatrix<float,4> & matrice) {
     unsigned int transformLoc = glGetUniformLocation(shaderProgram, "transform");
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &matrice[0][0] ); 
     glDrawArrays(mode, 0, vertices_size );
+    debug(2, "render() exit.");
 }
 
 
-d
+
 
 TypedBodyView::TypedBodyView(TypedBody * typed_body, GLuint vbo, unsigned int shaderProgram, size_t vertices_size, float scale, GLuint mode, SquareMatrix4df achsen_korrektur,
             std::function<bool()> draw, std::function<void(TypedBodyView *)> modify)
@@ -323,7 +327,7 @@ SquareMatrix4df TypedBodyView::create_object_transformation(Vector2df direction,
     return translation * rotation * scaling * achsen_korrektur;
 }
 
-/* ORIGINAL CODE:
+/*
   SquareMatrix4df TypedBodyView::create_object_transformation(Vector2df direction, float angle, float scale) {
     SquareMatrix4df  translation= { {1.0f,        0.0f,          0.0f, 0.0f},
                                     {0.0f,        1.0f,          0.0f, 0.0f},
@@ -362,7 +366,6 @@ void TypedBodyView::set_scale(float scale) {
 }
 
 
-// --- OpenGLRenderer Implementierung ---
 
 void OpenGLRenderer::createVbos() {
     // Lade 3D Modelle
@@ -413,7 +416,7 @@ void OpenGLRenderer::create(Saucer * saucer, std::vector< std::unique_ptr<TypedB
     if ( saucer->get_size() == 0 ) {
         scale = 20.0f;
     }
-    // Zurück zur Identität (Flache Ausrichtung)
+
     SquareMatrix4df identitaet = {{1.0f,0.0f,0.0f,0.0f}, {0.0f,1.0f,0.0f,0.0f}, {0.0f,0.0f,1.0f,0.0f}, {0.0f,0.0f,0.0f,1.0f}};
                                   
     views.push_back(std::make_unique<TypedBodyView>(saucer, vbo, shaderProgram, count, scale, GL_TRIANGLES, identitaet));   
@@ -439,8 +442,7 @@ void OpenGLRenderer::create(Asteroid * asteroid, std::vector< std::unique_ptr<Ty
     auto [vbo, count] = model_map["asteroid"];
     float base_scale = 40.0f;
     float scale = (asteroid->get_size() == 3 ? base_scale : ( asteroid->get_size() == 2 ? base_scale*0.5f : base_scale*0.25f ));
-    
-    // Zurück zur Identität
+
     SquareMatrix4df identitaet = {{1.0f,0.0f,0.0f,0.0f}, {0.0f,1.0f,0.0f,0.0f}, {0.0f,0.0f,1.0f,0.0f}, {0.0f,0.0f,0.0f,1.0f}};
     
     views.push_back(std::make_unique<TypedBodyView>(asteroid, vbo, shaderProgram, count, scale, GL_TRIANGLES, identitaet)); 
@@ -562,28 +564,39 @@ void OpenGLRenderer::create_shader_programs() {
         "in vec3 vNormal;\n"
         "in vec3 vPos;\n"
         "out vec4 FragColor;\n"
+        "\n"
+        "vec3 calcLight(vec3 lightDir, vec3 lightColor, vec3 normal, vec3 viewDir, vec3 objectColor) {\n"
+        "    // Diffus\n"
+        "    float diff = max(dot(normal, lightDir), 0.0);\n"
+        "    vec3 diffuse = diff * lightColor * objectColor;\n"
+        "    // Spekular (Glanzlicht)\n"
+        "    float specularStrength = 0.5;\n"
+        "    vec3 reflectDir = reflect(-lightDir, normal);\n"
+        "    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);\n"
+        "    vec3 specular = specularStrength * spec * lightColor;\n"
+        "    return diffuse + specular;\n"
+        "}\n"
+        "\n"
         "void main()\n"
         "{\n"
-        "   // Beleuchtung: Phong Modell\n"
-        "   vec3 lightDir = normalize(vec3(0.2, 0.2, 1.0));\n" // Licht kommt leicht von oben-rechts
         "   vec3 norm = normalize(vNormal);\n"
+        "   vec3 viewDir = vec3(0.0, 0.0, 1.0);\n"
         "   \n"
-        "   // Ambient (Umgebungslicht)\n"
-        "   float ambientStrength = 0.3;\n"
+        "   // Ambient (Umgebungslicht) - Deutlich heller\n"
+        "   float ambientStrength = 0.5;\n"
         "   vec3 ambient = ambientStrength * vColor.rgb;\n"
         "   \n"
-        "   // Diffus\n"
-        "   float diff = max(dot(norm, lightDir), 0.0);\n"
-        "   vec3 diffuse = diff * vColor.rgb;\n"
+        "   vec3 result = ambient;\n"
         "   \n"
-        "   // Spekular (Glanzlicht)\n"
-        "   float specularStrength = 0.5;\n"
-        "   vec3 viewDir = vec3(0.0, 0.0, 1.0);\n" // Orthographische Näherung
-        "   vec3 reflectDir = reflect(-lightDir, norm);\n"
-        "   float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);\n"
-        "   vec3 specular = specularStrength * spec * vec3(1.0, 1.0, 1.0);\n"
+        "   // 1. Hauptlicht (Hellweiß, von oben rechts)\n"
+        "   result += calcLight(normalize(vec3(0.2, 0.2, 1.0)), vec3(1.2, 1.2, 1.2), norm, viewDir, vColor.rgb);\n"
         "   \n"
-        "   vec3 result = ambient + diffuse + specular;\n"
+        "   // 2. Fülllicht (Helleres Blau, von links)\n"
+        "   result += calcLight(normalize(vec3(-1.0, 0.2, 0.5)), vec3(0.5, 0.5, 0.7), norm, viewDir, vColor.rgb);\n"
+        "   \n"
+        "   // 3. Akzentlicht (Stärkeres Rot, von unten)\n"
+        "   result += calcLight(normalize(vec3(0.0, -1.0, 0.2)), vec3(0.4, 0.3, 0.3), norm, viewDir, vColor.rgb);\n"
+        "   \n"
         "   FragColor = vec4(result, vColor.a);\n"
         "}\n\0";
 

@@ -1,9 +1,0 @@
-/home/ede/Documents/WS_ComputerGrafik/A7/A7_test/CMakeFiles/main_game.dir
-/home/ede/Documents/WS_ComputerGrafik/A7/A7_test/CMakeFiles/math_test.dir
-/home/ede/Documents/WS_ComputerGrafik/A7/A7_test/CMakeFiles/matrix_test.dir
-/home/ede/Documents/WS_ComputerGrafik/A7/A7_test/CMakeFiles/geometry_test.dir
-/home/ede/Documents/WS_ComputerGrafik/A7/A7_test/CMakeFiles/physics_test.dir
-/home/ede/Documents/WS_ComputerGrafik/A7/A7_test/CMakeFiles/game_test.dir
-/home/ede/Documents/WS_ComputerGrafik/A7/A7_test/CMakeFiles/test.dir
-/home/ede/Documents/WS_ComputerGrafik/A7/A7_test/CMakeFiles/edit_cache.dir
-/home/ede/Documents/WS_ComputerGrafik/A7/A7_test/CMakeFiles/rebuild_cache.dir
